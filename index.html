@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/index.css">
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="title-words">*CLICK SENTENCES TO TREAT</div>
+        <i class="common-icon voice-icon" id="btn"></i>
+        <div class="video-container">
+            <video loop id="myVideo" src="http://s4nlpiynd.bkt.gdipper.com/video.mp4" muted autoplay></video>
+            <div id="tmBox" class="tmBox"></div>
+        </div>
+    </div>
+</body>
+<script src="./js/jquery-3.6.0.js"></script>
+<script>
+    var video = document.getElementById("myVideo");
+    //voice click
+    $("#btn").click(function () {
+        //判断是否有声音
+        if ($("#btn").hasClass("voice-icon")) {
+            $("#btn")
+                .removeClass("voice-icon")
+                .addClass("novoice-icon")
+            video.muted = false;
+        } else {
+            $("#btn")
+                .removeClass("novoice-icon")
+                .addClass("voice-icon")
+            video.muted = true;
+        }
+    })
+    //根字体设置
+    function setHtmlFontSize() {
+        var w = document.documentElement.clientWidth;
+
+        if (w > 750) {
+            // w = 750;
+        }
+
+        var fz = w * 20 / 375;
+        document
+            .getElementsByTagName('html')[0]
+            .style
+            .fontSize = fz + 'px';
+    }
+
+    //实时根据屏宽来适应字体
+    setHtmlFontSize();
+    window.onresize = function () {
+        setHtmlFontSize();
+    }
+
+    //获取不重复随机数列
+    function getOrder(start, end) {
+        var len = end - start + 1;
+        var myorder = new Array();
+        var index = 0;
+
+        while (index < len) {
+            var flag = true;
+            var num = parseInt(Math.floor(Math.random() * len) + start);
+            for (var i = 0; i < myorder.length; i++) {
+                if (myorder[i] == num) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                myorder[index] = num;
+                index++;
+            }
+        }
+        return myorder;
+    }
+
+    //弹幕的设置
+    var tmEntity = {
+        //弹幕内容
+        tmList: [
+            'Get the juice out of the casing around the seeds.',
+            "Fascinated by the pomegranate's tough outer skin.",
+            'Red color attracted me.',
+            'Messy.',
+            'Time consuming to process.',
+            'Taste delicious.',
+            'A lot of work for a little bit of taste. ',
+            '拜倒在石榴裙下。',
+            'Hard to open.',
+            'I loved them as a little girl. ',
+            "It's bad. ",
+            "I enjoy them as a scent. ",
+            "Persephone and Hades.",
+            "Round fruit.",
+            "It looks like apple but it is different from apple.",
+            "Sour hard cherries.",
+            "Kiwi like in texture.",
+            "Jewel-like seeds.",
+            "They are all bad.",
+            "Peel the outer skin.",
+            "Fertility.",
+            "Cut off the crown.",
+            "I would eat it raw and sliced.",
+            "I would use my bear man hands and eat it like a savage.",
+            "Knife."
+        ],
+        //弹幕列表上限
+        tmMaxLines: 25,
+        //弹幕行数
+        tmRows: 25,
+        //初始弹幕索引
+        initIndex: 0,
+        //弹幕过度时间 s
+        tmTranstionTime: 1,
+        //屏幕宽度
+        swidth: document.documentElement.clientWidth,
+        //弹幕循环
+        isRunTm: true,
+        //弹幕父容器class
+        tmFatherClass: ".tmBox",
+        //弹幕class
+        tmClass: ".tmItem",
+        //弹幕高度
+        tmHeight: $(".tmBox").height() / 10,
+        //屏中最低弹幕数
+        screenTmNum: 10
+    }
+
+    console.log(tmEntity);
+
+    var rowsOrder = getOrder(0, tmEntity.tmRows - 1);
+    var timeOrder = getOrder(0, tmEntity.tmRows - 1);
+
+    //添加弹幕
+    function addTm(item, i, max) {
+        var str = item + "";
+        var obj = "<div onclick='pauseTmScreen(\"" + str + "\")' class='" + tmEntity
+            .tmClass
+            .replace('.', '') + " runTm' style='transform: translateX(" + tmEntity.swidth + "px);animation-delay:" + (
+                timeOrder[timeOrder.length - 1] * tmEntity.tmTranstionTime) + "s;top:" + (
+                rowsOrder[rowsOrder.length - 1] * tmEntity.tmHeight) + "px'>" + item + "</div>";
+        $(tmEntity.tmFatherClass).append(obj);
+        addListenerEnd($(tmEntity.tmClass).eq(tmEntity.initIndex));
+        tmEntity.initIndex++;
+
+        //校验行
+        rowsOrder.pop();
+        if (rowsOrder.length == 0) {
+            rowsOrder = getOrder(0, tmEntity.tmRows - 1);
+        }
+        timeOrder.pop();
+        if (timeOrder.length == 0) {
+            timeOrder = getOrder(0, tmEntity.tmRows - 1);
+        }
+    }
+
+    function addListenerEnd(el) {
+        el.on("animationend webkitAnimationEnd", function () {
+            el.remove();
+            tmEntity.initIndex--;
+            if (tmEntity.isRunTm && $(tmEntity.tmFatherClass + " " + tmEntity.tmClass).length <= tmEntity.screenTmNum) {
+                initTm(tmEntity.tmList);
+            }
+        });
+    }
+
+    function initTm(list) {
+        for (var i = 0; i < list.length; i++) {
+            addTm(list[i], i, list.length);
+        }
+    }
+
+    //开始弹幕
+    initTm(tmEntity.tmList);
+    tmEntity.isRunTm = true;
+    //暂停弹幕
+    function pauseTmScreen(item) {
+        console.log(item)
+        console.log()
+        var index = 0;
+        $("#tmBox .tmItem")
+        for (var i = 0; i < $("#tmBox .tmItem").length; i++) {
+            var html = $("#tmBox .tmItem")
+                .eq(i)
+                .html();
+            if (html == item) {
+                index = i
+            }
+        }
+        $(tmEntity.tmClass).css({ "WebkitAnimationPlayState": "paused", "AnimationPlayState": "paused" });
+        //其余透明 当前变红
+        $(".tmItem").css("opacity", "0");
+        $(".tmItem")
+            .eq(index)
+            .css({ "opacity": "1", "color": "#f00" });
+        setTimeout(() => {
+            //12s后颜色恢复
+            $(".tmItem").css("opacity", "1");
+            $(".tmItem")
+                .eq(index)
+                .css({ "opacity": "1", "color": "#fff" });
+            //弹幕继续
+            resumeTmScreen()
+        }, 12 * 1000)
+    }
+
+    //继续弹幕
+    function resumeTmScreen() {
+        $(tmEntity.tmClass).css({ "WebkitAnimationPlayState": "running", "AnimationPlayState": "running" });
+    }
+</script>
+
+</html>

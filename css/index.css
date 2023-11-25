@@ -1,0 +1,88 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: "times new roman";
+}
+
+.main-container {
+    position: relative;
+    height: 100%;
+}
+
+.title-words {
+    background-color: rgb(203, 50, 16);
+    color: #fff;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    font-style: italic;
+    font-family: "times new roman";
+}
+
+.video-container {
+    height: calc(100% - 40px);
+    position: relative;
+}
+
+.video-container video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(203, 50, 16);
+    /* object-fit: fill; */
+}
+
+.main-container .common-icon {
+    position: absolute;
+    left: 5px;
+    top: 10px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 2;
+    background-size: 100% 100%;
+}
+
+.voice-icon {
+    background-image: url("../images/voice.png");
+}
+
+.novoice-icon {
+    background-image: url("../images/no-voice.png");
+}
+
+.main-container .tmBox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.tmItem {
+    position: absolute;
+    color: #fff;
+    font-size: 25px;
+    font-family: "times new roman";
+}
+
+.tmItem.runTm {
+    animation: runTmEfe 20s linear 0s 1 alternate;
+    animation-fill-mode: backwards;
+}
+
+@keyframes runTmEfe {
+    from {
+        transform: translateX(18.75rem);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
